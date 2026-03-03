@@ -1,0 +1,27 @@
+{
+  "name": "pokedex_boot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/main.js",
+    "dev": "npx tsc && node dist/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vadzim-Asipovich/pokedex_boot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vadzim-Asipovich/pokedex_boot/issues"
+  },
+  "homepage": "https://github.com/Vadzim-Asipovich/pokedex_boot#readme",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^25.3.3",
+    "typescript": "^5.9.3"
+  }
+}
