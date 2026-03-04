@@ -1,4 +1,5 @@
 import { createInterface } from 'readline';
+import { getCommands } from './command_registry.js';
 
 export function cleanInput(input: string): string[] {
   const trimmedInput = input.trim();
@@ -24,7 +25,13 @@ export function startREPL() {
     if (input.length === 0) {
       rl.prompt();
     } else { 
-      console.log(`Your command was: ${input[0]}`)
+      const command = input[0];
+      const commands = getCommands();
+      if (command in commands) {
+        commands[command].callback(commands);
+      } else {
+        console.log(`Unknown command`);
+      }
     }
     rl.prompt();
   }).on('close', () => {
