@@ -1,41 +1,40 @@
-import { createInterface } from 'readline';
-import { getCommands } from './command_registry.js';
+import { State } from "./state.js";
 
-export function cleanInput(input: string): string[] {
-  const trimmedInput = input.trim();
+export function startREPL(state: State) {
+  state.readline.prompt();
 
-  if (trimmedInput.length === 0) {
-    return [];
-  }
+  state.readline.on("line", async (input) => {
+    const words = cleanInput(input);
+    if (words.length === 0) {
+      state.readline.prompt();
+      return;
+    }
 
-  return trimmedInput.split(/\s+/).map((word) => word.toLowerCase());
+    const commandName = words[0];
+
+    const cmd = state.commands[commandName];
+    if (!cmd) {
+      console.log(
+        `Unknown command: "${commandName}". Type "help" for a list of commands.`,
+      );
+      state.readline.prompt();
+      return;
+    }
+
+    try {
+      cmd.callback(state);
+    } catch (e) {
+      console.log(e);
+    }
+
+    state.readline.prompt();
+  });
 }
 
-export function startREPL() {
-  const rl = createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    prompt: '> '
-  });
-
-  rl.prompt();
-
-  rl.on('line', (line) => {
-    const input = cleanInput(line);
-    if (input.length === 0) {
-      rl.prompt();
-    } else { 
-      const command = input[0];
-      const commands = getCommands();
-      if (command in commands) {
-        commands[command].callback(commands);
-      } else {
-        console.log(`Unknown command`);
-      }
-    }
-    rl.prompt();
-  }).on('close', () => {
-    console.log('Exiting REPL...');
-    process.exit(0);
-  });
+export function cleanInput(input: string): string[] {
+  return input
+    .toLowerCase()
+    .trim()
+    .split(" ")
+    .filter((word) => word !== "");
 }
